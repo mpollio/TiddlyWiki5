@@ -34,24 +34,23 @@ exports.parse = function() {
 		textRef = $tw.utils.trim(this.match[1]);
 	// Prepare the transclude widget
 	var transcludeNode = {
-			type: "element",
-			tag: "$transclude",
+			type: "transclude",
 			attributes: {}
 		};
 	// Prepare the tiddler widget
+	var tr, targetTitle, targetField, targetIndex, tiddlerNode;
 	if(textRef) {
-		var tr = $tw.utils.parseTextReference(textRef),
-			targetTitle = tr.title,
-			targetField = tr.field,
-			targetIndex = tr.index,
-			tiddlerNode = {
-				type: "element",
-				tag: "$tiddler",
-				attributes: {
-					tiddler: {type: "string", value: targetTitle}
-				},
-				children: [transcludeNode]
-			};
+		tr = $tw.utils.parseTextReference(textRef);
+		targetTitle = tr.title;
+		targetField = tr.field;
+		targetIndex = tr.index;
+		tiddlerNode = {
+			type: "tiddler",
+			attributes: {
+				tiddler: {type: "string", value: targetTitle}
+			},
+			children: [transcludeNode]
+		};
 	}
 	if(template) {
 		transcludeNode.attributes.tiddler = {type: "string", value: template};

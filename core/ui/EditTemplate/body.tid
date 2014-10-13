@@ -1,20 +1,36 @@
 title: $:/core/ui/EditTemplate/body
 tags: $:/tags/EditTemplate
 
-\define lingo-base() $:/language/EditTemplate/
-<$reveal state="$:/ShowEditPreview" type="match" text="yes">
+\define lingo-base() $:/language/EditTemplate/Body/
+<$list filter="[is[current]has[_canonical_uri]]">
 
-<em class="tw-edit"><<lingo Body/Hint>></em> <$button type="set" set="$:/ShowEditPreview" setTo="no"><<lingo Body/Preview/Button/Hide>></$button>
+<div class="tc-message-box">
 
-<div class="tw-tiddler-preview">
-<div class="tw-tiddler-preview-preview">
+<<lingo External/Hint>>
+
+<a href={{!!_canonical_uri}}><$text text={{!!_canonical_uri}}/></a>
+
+<$edit-text field="_canonical_uri" class="tc-edit-fields"></$edit-text>
+
+</div>
+
+</$list>
+
+<$list filter="[is[current]!has[_canonical_uri]]">
+
+<$reveal state="$:/state/showeditpreview" type="match" text="yes">
+
+<em class="tc-edit"><<lingo Hint>></em> <$button type="set" set="$:/state/showeditpreview" setTo="no"><<lingo Preview/Button/Hide>></$button>
+
+<div class="tc-tiddler-preview">
+<div class="tc-tiddler-preview-preview">
 
 <$transclude />
 
 </div>
 
-<div class="tw-tiddler-preview-edit">
-<$edit field="text" class="tw-edit-texteditor" placeholder={{$:/language/EditTemplate/Body/Placeholder}}/>
+<div class="tc-tiddler-preview-edit">
+<$edit field="text" class="tc-edit-texteditor" placeholder={{$:/language/EditTemplate/Body/Placeholder}}/>
 
 </div>
 
@@ -22,9 +38,11 @@ tags: $:/tags/EditTemplate
 
 </$reveal>
 
-<$reveal state="$:/ShowEditPreview" type="nomatch" text="yes">
+<$reveal state="$:/state/showeditpreview" type="nomatch" text="yes">
 
-<em class="tw-edit"><<lingo Body/Hint>></em> <$button type="set" set="$:/ShowEditPreview" setTo="yes"><<lingo Body/Preview/Button/Show>></$button>
-<$edit field="text" class="tw-edit-texteditor" placeholder={{$:/language/EditTemplate/Body/Placeholder}}/>
+<em class="tc-edit"><<lingo Hint>></em> <$button type="set" set="$:/state/showeditpreview" setTo="yes"><<lingo Preview/Button/Show>></$button>
+<$edit field="text" class="tc-edit-texteditor" placeholder={{$:/language/EditTemplate/Body/Placeholder}}/>
 
 </$reveal>
+
+</$list>

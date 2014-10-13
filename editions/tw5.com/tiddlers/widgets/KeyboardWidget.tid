@@ -1,20 +1,21 @@
 created: 20140302192136805
 modified: 20140302192935781
-tags: widget
+tags: Widgets
 title: KeyboardWidget
 type: text/vnd.tiddlywiki
+caption: keyboard
 
 ! Introduction
 
-The keyboard widget allows WidgetMessages to be generated in response to key presses.
+The keyboard widget allows [[Messages]] to be generated in response to key presses.
 
 ! Content and Attributes
 
 The content of the `<$keyboard>` widget is rendered normally. The keyboard shortcut only takes effect within the contained content.
 
 |!Attribute |!Description |
-|message |The title of the WidgetMessage to generate |
-|param |The parameter to be passed with the WidgetMessage |
+|message |The title of the [[WidgetMessage|Messages]] to generate |
+|param |The parameter to be passed with the [[WidgetMessage|Messages]] |
 |key |Key string identifying the key to be trapped (see below) |
 |class |A CSS class to be assigned to the generated HTML DIV element |
 

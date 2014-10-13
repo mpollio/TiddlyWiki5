@@ -28,7 +28,7 @@ exports.init = function(parser) {
 };
 
 var isLinkExternal = function(to) {
-	var externalRegExp = /(?:file|http|https|mailto|ftp|irc|news|data|skype):[^\s'"]+(?:\/|\b)/i;
+	var externalRegExp = /(?:file|http|https|mailto|ftp|irc|news|data|skype):[^\s<>{}\[\]`|'"\\^~]+(?:\/|\b)/i;
 	return externalRegExp.test(to);
 };
 
@@ -44,7 +44,7 @@ exports.parse = function() {
 			tag: "a",
 			attributes: {
 				href: {type: "string", value: link},
-				"class": {type: "string", value: "tw-tiddlylink-external"},
+				"class": {type: "string", value: "tc-tiddlylink-external"},
 				target: {type: "string", value: "_blank"}
 			},
 			children: [{
@@ -53,8 +53,7 @@ exports.parse = function() {
 		}];
 	} else {
 		return [{
-			type: "element",
-			tag: "$link",
+			type: "link",
 			attributes: {
 				to: {type: "string", value: link}
 			},

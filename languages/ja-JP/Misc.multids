@@ -1,0 +1,14 @@
+title: $:/language/
+
+ClassicWarning/Hint: この tiddler はクラシックスタイルの TiddlyWiki フォーマットで書かれています。このフォーマットは TiddlyWiki バージョン 5 との完全な互換性はありません。詳しくは http://tiddlywiki.com/static/Upgrading.html を参照してください。
+ClassicWarning/Upgrade/Caption: アップグレード
+CloseAll/Button: すべて閉じる
+ConfirmDeleteTiddler: 本当にこの tiddler "<$text text=<<title>>/>" を削除しますか?
+ConfirmOverwriteTiddler: 本当にこの tiddler "<$text text=<<title>>/>" を上書きしますか?
+InvalidFieldName: フィールド名に不正な文字が使われています "<$text text=<<fieldName>>/>". フィールド名に使用できるのは英小文字かアンダースコア(`_`)、ハイフン(`-`)、ピリオド(`.`)のみです。
+MissingTiddler/Hint: 未作成の tiddler "<$text text=<<currentTiddler>>/>" - クリック {{$:/core/images/edit-button}} して作成
+RecentChanges/DateFormat: YYYY-MM-DD
+SystemTiddler/Tooltip: これはシステム tiddler です
+TagManager/Colour/Heading: 色
+TagManager/Icon/Heading: アイコン
+TagManager/Tag/Heading: タグ

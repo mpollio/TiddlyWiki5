@@ -1,12 +1,12 @@
 created: 20131228164411884
 modified: 20131228164955084
-tags: mechanism
+tags: Mechanisms
 title: StateMechanism
 type: text/vnd.tiddlywiki
 
 The StateMechanism in TiddlyWiki is at the heart of how complex user interfaces can be built from WikiText.
 
-In the browser, the TiddlyWiki display is produced by dynamically rendering the tiddler [[$:/core/ui/PageMacros]]. Through various transclusions and other widgets it renders the entire user interface. The dynamic rendering is accomplished by a mechanism called "binding": any changes to the tiddlers in the store are dynamically reflected in the browser display.
+In the browser, the TiddlyWiki display is produced by dynamically rendering the tiddler [[$:/core/ui/PageTemplate]]. Through various transclusions and other widgets it renders the entire user interface. The dynamic rendering is accomplished by a mechanism called "binding": any changes to the tiddlers in the store are dynamically reflected in the browser display.
 
 The stack of templates that make up the TiddlyWiki display are complex but we'll focus on the line that displays the main story column:
 
@@ -28,7 +28,7 @@ Note how this approach makes the ''open'' tab in the sidebar very easy to implem
 
 ```
 <$list filter="[list[$:/StoryList]]" history="$:/HistoryList" storyview="pop">
-<$button message="tw-close-tiddler" class="btn-invisible btn-mini">&times;</$button> <$link to={{!!title}}><$view field="title"/></$link>
+<$button message="tm-close-tiddler" class="tc-btn-invisible tc-btn-mini">&times;</$button> <$link to={{!!title}}><$view field="title"/></$link>
 </$list>
 ```
 

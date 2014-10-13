@@ -19,7 +19,7 @@ var bumpSequenceNumber = function(object) {
 	if(sequenceNumber !== null) {
 		object.sequenceNumber = sequenceNumber++;
 	}
-}
+};
 
 var TW_TextNode = function(text) {
 	bumpSequenceNumber(this);
@@ -39,6 +39,7 @@ var TW_Element = function(tag,namespace) {
 	this.attributes = {};
 	this.isRaw = false;
 	this.children = [];
+	this.style = {};
 	this.namespaceURI = namespace || "http://www.w3.org/1999/xhtml";
 };
 
@@ -79,7 +80,7 @@ TW_Element.prototype.insertBefore = function(node,nextSibling) {
 	} else {
 		this.appendChild(node);
 	}
-}
+};
 
 TW_Element.prototype.removeChild = function(node) {
 	var p = this.children.indexOf(node);
@@ -93,9 +94,9 @@ TW_Element.prototype.hasChildNodes = function() {
 };
 
 Object.defineProperty(TW_Element.prototype, "firstChild", {
-    get: function() {
-    	return this.children[0];
-    }
+	get: function() {
+		return this.children[0];
+	}
 });
 
 TW_Element.prototype.addEventListener = function(type,listener,useCapture) {
@@ -106,22 +107,22 @@ Object.defineProperty(TW_Element.prototype, "className", {
 	get: function() {
 		return this.attributes["class"] || "";
 	},
-    set: function(value) {
-    	this.attributes["class"] = value;
-    }
+	set: function(value) {
+		this.attributes["class"] = value;
+	}
 });
 
 Object.defineProperty(TW_Element.prototype, "value", {
 	get: function() {
-		return this.attributes["value"] || "";
+		return this.attributes.value || "";
 	},
-    set: function(value) {
-    	this.attributes["value"] = value;
-    }
+	set: function(value) {
+		this.attributes.value = value;
+	}
 });
 
 Object.defineProperty(TW_Element.prototype, "outerHTML", {
-    get: function() {
+	get: function() {
 		var output = [],attr,a,v;
 		output.push("<",this.tag);
 		if(this.attributes) {
@@ -137,13 +138,22 @@ Object.defineProperty(TW_Element.prototype, "outerHTML", {
 				}
 			}
 		}
+		if(this.style) {
+			var style = [];
+			for(var s in this.style) {
+				style.push(s + ":" + this.style[s] + ";");
+			}
+			if(style.length > 0) {
+				output.push(" style='",style.join(""),"'")
+			}
+		}
 		output.push(">");
 		if($tw.config.htmlVoidElements.indexOf(this.tag) === -1) {
 			output.push(this.innerHTML);
 			output.push("</",this.tag,">");
 		}
 		return output.join("");
-    }
+	}
 });
 
 Object.defineProperty(TW_Element.prototype, "innerHTML", {
@@ -162,10 +172,10 @@ Object.defineProperty(TW_Element.prototype, "innerHTML", {
 			return b.join("");
 		}
 	},
-    set: function(value) {
-    	this.isRaw = true;
-    	this.rawHTML = value;
-    }
+	set: function(value) {
+		this.isRaw = true;
+		this.rawHTML = value;
+	}
 });
 
 Object.defineProperty(TW_Element.prototype, "textContent", {
@@ -179,6 +189,9 @@ Object.defineProperty(TW_Element.prototype, "textContent", {
 			});
 			return b.join("");
 		}
+	},
+	set: function(value) {
+		this.children = [new TW_TextNode(value)];
 	}
 });
 
@@ -193,7 +206,7 @@ Object.defineProperty(TW_Element.prototype, "formattedTextContent", {
 				b.push("\n");
 			}
 			if(this.tag === "li") {
-				b.push("* ")
+				b.push("* ");
 			}
 			$tw.utils.each(this.children,function(node) {
 				b.push(node.formattedTextContent);

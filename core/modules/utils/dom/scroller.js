@@ -13,7 +13,7 @@ Module that creates a $tw.utils.Scroller object prototype that manages scrolling
 "use strict";
 
 /*
-Event handler for when the `tw-scroll` event hits the document body
+Event handler for when the `tm-scroll` event hits the document body
 */
 var PageScroller = function() {
 	this.idRequestFrame = null;
@@ -44,7 +44,7 @@ PageScroller.prototype.cancelScroll = function() {
 Handle an event
 */
 PageScroller.prototype.handleEvent = function(event) {
-	if(event.type === "tw-scroll") {
+	if(event.type === "tm-scroll") {
 		return this.scrollIntoView(event.target);
 	}
 	return true;
@@ -55,25 +55,20 @@ Handle a scroll event hitting the page document
 */
 PageScroller.prototype.scrollIntoView = function(element) {
 	var duration = $tw.utils.getAnimationDuration();
-	// Get the offset bounds of the element
-	var bounds = {
-			left: element.offsetLeft,
-			top: element.offsetTop,
-			width: element.offsetWidth,
-			height: element.offsetHeight
-		};
-	// Walk up the tree adjusting the offset bounds by each offsetParent
-	while(element.offsetParent) {
-		element = element.offsetParent;
-		bounds.left += element.offsetLeft;
-		bounds.top += element.offsetTop;
-	}
 	// Now get ready to scroll the body
 	this.cancelScroll();
-	this.startTime = new Date();
-	var scrollPosition = $tw.utils.getScrollPosition(),
-		// We'll consider the horizontal and vertical scroll directions separately via this function
-		getEndPos = function(targetPos,targetSize,currentPos,currentSize) {
+	this.startTime = Date.now();
+	var scrollPosition = $tw.utils.getScrollPosition();
+	// Get the client bounds of the element and adjust by the scroll position
+	var clientBounds = element.getBoundingClientRect(),
+		bounds = {
+			left: clientBounds.left + scrollPosition.x,
+			top: clientBounds.top + scrollPosition.y,
+			width: clientBounds.width,
+			height: clientBounds.height
+		};
+	// We'll consider the horizontal and vertical scroll directions separately via this function
+	var getEndPos = function(targetPos,targetSize,currentPos,currentSize) {
 			// If the target is above/left of the current view, then scroll to it's top/left
 			if(targetPos <= currentPos) {
 				return targetPos;
@@ -99,7 +94,7 @@ PageScroller.prototype.scrollIntoView = function(element) {
 			if(duration <= 0) {
 				t = 1;
 			} else {
-				t = ((new Date()) - self.startTime) / duration;	
+				t = ((Date.now()) - self.startTime) / duration;	
 			}
 			if(t >= 1) {
 				self.cancelScroll();

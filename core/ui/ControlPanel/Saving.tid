@@ -13,17 +13,15 @@ http://$(userName)$.tiddlyspot.com/backup/
 </$set>
 </$reveal>
 \end
-! <<lingo Saving/Heading>>
-
-|<<lingo AutoSave>> |{{$:/snippets/autosavestatus}} |
-
 ! <<lingo TiddlySpot/Heading>>
+
+<<lingo TiddlySpot/Description>>
 
 |<<lingo TiddlySpot/UserName>> |<$edit-text tiddler="$:/UploadName" default="" tag="input"/> |
 |<<lingo TiddlySpot/Password>> |<$password name="upload"/> |
 |<<lingo TiddlySpot/Backups>> |<<backupLink>> |
 
-!! <<lingo TiddlySpot/Advanced/Heading>>
+''<<lingo TiddlySpot/Advanced/Heading>>''
 
 |<<lingo TiddlySpot/ServerURL>>  |<$edit-text tiddler="$:/UploadURL" default="" tag="input"/> |
 |<<lingo TiddlySpot/Filename>> |<$edit-text tiddler="$:/UploadFilename" default="index.html" tag="input"/> |

@@ -17,7 +17,7 @@ var Widget = require("$:/core/modules/widgets/widget.js").widget;
 var LinkCatcherWidget = function(parseTreeNode,options) {
 	this.initialise(parseTreeNode,options);
 	this.addEventListeners([
-		{type: "tw-navigate", handler: "handleNavigateEvent"}
+		{type: "tm-navigate", handler: "handleNavigateEvent"}
 	]);
 };
 
@@ -63,16 +63,17 @@ LinkCatcherWidget.prototype.refresh = function(changedTiddlers) {
 };
 
 /*
-Handle a tw-navigate event
+Handle a tm-navigate event
 */
 LinkCatcherWidget.prototype.handleNavigateEvent = function(event) {
 	if(this.catchTo) {
 		this.wiki.setTextReference(this.catchTo,event.navigateTo,this.getVariable("currentTiddler"));
 	}
-	if(this.catchMessage) {
-		this.dispatchEvent({
+	if(this.catchMessage && this.parentWidget) {
+		this.parentWidget.dispatchEvent({
 			type: this.catchMessage,
-			param: event.navigateTo
+			param: event.navigateTo,
+			navigateTo: event.navigateTo
 		});
 	}
 	if(this.catchSet) {

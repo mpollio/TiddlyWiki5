@@ -79,7 +79,7 @@ RadioWidget.prototype.setValue = function() {
 		var tiddler = this.wiki.getTiddler(this.radioTitle),
 			addition = {};
 		addition[this.radioField] = this.radioValue;
-		this.wiki.addTiddler(new $tw.Tiddler(tiddler,addition));
+		this.wiki.addTiddler(new $tw.Tiddler({title: this.radioTitle},tiddler,addition,this.wiki.getModificationFields()));
 	}
 };
 
@@ -95,13 +95,13 @@ Compute the internal state of the widget
 RadioWidget.prototype.execute = function() {
 	// Get the parameters from the attributes
 	this.radioTitle = this.getAttribute("tiddler",this.getVariable("currentTiddler"));
-	this.radioField = this.getAttribute("field");
+	this.radioField = this.getAttribute("field","text");
 	this.radioValue = this.getAttribute("value");
 	this.radioClass = this.getAttribute("class","");
 	if(this.radioClass !== "") {
 		this.radioClass += " ";
 	}
-	this.radioClass += "tw-radio";
+	this.radioClass += "tc-radio";
 	// Make the child widgets
 	this.makeChildWidgets();
 };

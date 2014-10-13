@@ -1,8 +1,9 @@
 created: 20131024141900000
 modified: 20140211232346858
-tags: widget
+tags: Widgets
 title: RevealWidget
 type: text/vnd.tiddlywiki
+caption: reveal
 
 ! Introduction
 
@@ -21,7 +22,7 @@ The content of the `<$reveal>` widget is displayed according to the rules given 
 |type |The type of matching performed: ''match'', ''nomatch'' or ''popup'' |
 |text |The text to match when the type is ''match'' and ''nomatch'' |
 |position |The position used for the popup when the type is ''popup''. Can be ''left'', ''above'', ''aboveright'', ''right'', ''belowleft'' or ''below'' |
-|default |Default value to use when the state tiddler |
+|default |Default value to use when the state tiddler is missing |
 |animate |Set to "yes" to animate opening and closure (defaults to "no") |
 |retain |Set to "yes" to force the content to be retained even when hidden (defaults to "no")|
 
@@ -33,8 +34,7 @@ Retaining the content when hidden can give poor performance since the hidden con
 
 Here's a simple example of showing and hiding content with buttons:
 
-```
-<$button set="$:/SampleRevealState" setTo="show">Show me</$button>
+<<wikitext-example-without-html '<$button set="$:/SampleRevealState" setTo="show">Show me</$button>
 <$button set="$:/SampleRevealState" setTo="hide">Hide me</$button>
 
 <$reveal type="match" state="$:/SampleRevealState" text="show">
@@ -42,47 +42,37 @@ Here's a simple example of showing and hiding content with buttons:
 ! This is the revealed content
 And this is some text
 
-</$reveal>
-```
+</$reveal>'>>
 
-It renders as:
+!! "Slider"
+
+A slider appears as a single button that can be used to toggle the display of the contained content.
+
+<<wikitext-example-without-html '<$reveal type="nomatch" state="$:/SampleRevealState" text="show">
 
 <$button set="$:/SampleRevealState" setTo="show">Show me</$button>
-<$button set="$:/SampleRevealState" setTo="hide">Hide me</$button>
 
+</$reveal>
 <$reveal type="match" state="$:/SampleRevealState" text="show">
+
+<$button set="$:/SampleRevealState" setTo="hide">Hide me</$button>
 
 ! This is the revealed content
 And this is some text
 
-</$reveal>
+</$reveal>'>>
 
 !! Popup
 
 Here is a simple example of a popup built with the RevealWidget:
 
-```
-<$button popup="$:/SamplePopupState">Pop me up!</$button>
+<<wikitext-example-without-html '<$button popup="$:/SamplePopupState">Pop me up!</$button>
 
 <$reveal type="popup" state="$:/SamplePopupState">
-<div class="tw-drop-down">
+<div class="tc-drop-down">
 
 ! This is the popup
 And this is some text
 
 </div>
-</$reveal>
-```
-
-It renders as:
-
-<$button popup="$:/SamplePopupState">Pop me up!</$button>
-
-<$reveal type="popup" state="$:/SamplePopupState">
-<div class="tw-drop-down">
-
-! This is the popup
-And this is some text
-
-</div>
-</$reveal>
+</$reveal>'>>

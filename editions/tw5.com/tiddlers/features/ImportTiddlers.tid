@@ -1,7 +1,8 @@
-created: 201308251620
-modified: 201308251620
-tags: features
+created: 20130825162000000
+modified: 20140919160801832
+tags: Features
 title: ImportTiddlers
+type: text/vnd.tiddlywiki
 
 You can import content into a TiddlyWiki file in several ways:
 

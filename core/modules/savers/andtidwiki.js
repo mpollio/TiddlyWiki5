@@ -17,7 +17,7 @@ var AndTidWiki = function(wiki) {
 
 AndTidWiki.prototype.save = function(text,method,callback) {
 	// Get the pathname of this document
-	var pathname = decodeURIComponent(document.location.toString());
+	var pathname = decodeURIComponent(document.location.toString().split("#")[0]);
 	// Strip the file://
 	if(pathname.indexOf("file://") === 0) {
 		pathname = pathname.substr(7);
@@ -32,7 +32,7 @@ AndTidWiki.prototype.save = function(text,method,callback) {
 		pathname = pathname.substr(0,p);
 	}
 	// Save the file
-	window.twi.saveFile(pathname,text)
+	window.twi.saveFile(pathname,text);
 	// Call the callback
 	callback(null);
 	return true;

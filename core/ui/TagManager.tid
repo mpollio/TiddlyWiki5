@@ -1,34 +1,38 @@
 title: $:/TagManager
 
-\define iconEditor(title)
-<$edit-text field="icon" tag="input"/> <$button popup=<<qualify "$:/state/iconDropdown/$title$">> class="btn-invisible btn-dropdown">{{$:/core/images/down-arrow}}</$button>
-<div class="tw-block-dropdown-wrapper">
-<$reveal state=<<qualify "$:/state/iconDropdown/$title$">> type="nomatch" text="" default="">
-<$linkcatcher to="$title$!!icon">
-<div class="tw-block-dropdown tw-edit-type-dropdown">
-<$list filter="[is[shadow]is[image]] [!is[shadow]is[image]] [is[shadow]tag[$:/tags/Image]] [!is[shadow]tag[$:/tags/Image]] +[sort[title]]">
+\define lingo-base() $:/language/TagManager/
+\define iconEditorTab(type)
+<$list filter="[all[shadows+tiddlers]is[image]] [all[shadows+tiddlers]tag[$:/tags/Image]] -[type[application/pdf]] +[sort[title]] +[$type$is[system]]">
 <$link to={{!!title}}>
-<$view field="title"/>
+<$transclude/> <$view field="title"/>
 </$link>
 </$list>
-</div>
+\end
+\define iconEditor(title)
+<div class="tc-drop-down-wrapper">
+<$edit-text field="icon" tag="input" size="20"/> <$button popup=<<qualify "$:/state/popup/icon/$title$">> class="tc-btn-invisible tc-btn-dropdown">{{$:/core/images/down-arrow}}</$button>
+<$reveal state=<<qualify "$:/state/popup/icon/$title$">> type="popup" position="belowleft" text="" default="">
+<div class="tc-drop-down">
+<$linkcatcher to="$title$!!icon">
+<<iconEditorTab type:"!">>
+<hr/>
+<<iconEditorTab type:"">>
 </$linkcatcher>
+</div>
 </$reveal>
 </div>
 \end
 <table>
 <tbody>
 <tr>
-<th>Tag</th>
-<th>Count</th>
-<th>Colour</th>
-<th>Icon</th>
+<th><<lingo Tag/Heading>></th>
+<th><<lingo Colour/Heading>></th>
+<th><<lingo Icon/Heading>></th>
 </tr>
 <$list filter="[tags[]!is[system]sort[title]]">
 <tr>
 <td><$transclude tiddler="$:/core/ui/TagTemplate"/></td>
-<td><$count filter="[is[current]tagging[]]"/></td>
-<td><$edit-text field="color" tag="input" type="color"/></td>
+<td><$edit-text field="color" tag="input" type="text" size="9"/> <$edit-text field="color" tag="input" type="color"/></td>
 <td><$macrocall $name="iconEditor" title={{!!title}}/></td>
 </tr>
 </$list>

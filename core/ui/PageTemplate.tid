@@ -1,10 +1,32 @@
 title: $:/core/ui/PageTemplate
 
+\define containerClasses()
+tc-page-container tc-page-view-$(themeTitle)$ tc-language-$(languageTitle)$
+\end
+
+<$importvariables filter="[[$:/core/ui/PageMacros]] [all[shadows+tiddlers]tag[$:/tags/Macro]!has[draft.of]]">
+
+<$set name="tv-config-toolbar-icons" value={{$:/config/Toolbar/Icons}}>
+
+<$set name="tv-config-toolbar-text" value={{$:/config/Toolbar/Text}}>
+
+<$set name="tv-config-toolbar-class" value="tc-btn-invisible">
+
+<$set name="themeTitle" value={{$:/view}}>
+
+<$set name="currentTiddler" value={{$:/language}}>
+
+<$set name="languageTitle" value={{!!name}}>
+
+<$set name="currentTiddler" value="">
+
+<div class=<<containerClasses>>>
+
 <$navigator story="$:/StoryList" history="$:/HistoryList">
 
 <$dropzone>
 
-<$list filter="[is[shadow]!has[draft.of]tag[$:/tags/PageTemplate]] [!is[shadow]!has[draft.of]tag[$:/tags/PageTemplate]] +[tag[$:/tags/PageTemplate]]" variable="listItem">
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/PageTemplate]!has[draft.of]]" variable="listItem">
 
 <$transclude tiddler=<<listItem>>/>
 
@@ -14,3 +36,20 @@ title: $:/core/ui/PageTemplate
 
 </$navigator>
 
+</div>
+
+</$set>
+
+</$set>
+
+</$set>
+
+</$set>
+
+</$set>
+
+</$set>
+
+</$set>
+
+</$importvariables>

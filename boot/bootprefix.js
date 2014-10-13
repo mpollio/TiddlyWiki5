@@ -16,12 +16,19 @@ var _bootprefix = (function($tw) {
 
 "use strict";
 
-$tw = $tw || {};
+$tw = $tw || Object.create(null);
+$tw.boot = $tw.boot || Object.create(null);
 
 // Detect platforms
 $tw.browser = typeof(window) !== "undefined" ? {} : null;
 $tw.node = typeof(process) === "object" ? {} : null;
 $tw.nodeWebKit = $tw.node && global.window && global.window.nwDispatcher ? {} : null;
+
+// Set default boot tasks
+$tw.boot.tasks = {
+	trapErrors: !!($tw.browser && !$tw.node),
+	readBrowserTiddlers: !!($tw.browser && !$tw.node)
+};
 
 /*
 Information about each module is kept in an object with these members:
@@ -92,7 +99,7 @@ return $tw
 
 if(typeof(exports) === "undefined") {
 	// Set up $tw global for the browser
-	window.$tw = _bootprefix();
+	window.$tw = _bootprefix(window.$tw);
 } else {
 	// Export functionality as a module
 	exports.bootprefix = _bootprefix;

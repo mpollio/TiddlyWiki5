@@ -30,8 +30,9 @@ TextNodeWidget.prototype.render = function(parent,nextSibling) {
 	this.parentDomNode = parent;
 	this.computeAttributes();
 	this.execute();
-	var text = this.getAttribute("text",this.parseTreeNode.text),
-		textNode = this.document.createTextNode(text);
+	var text = this.getAttribute("text",this.parseTreeNode.text || "");
+	text = text.replace(/\r/mg,"");
+	var textNode = this.document.createTextNode(text);
 	parent.insertBefore(textNode,nextSibling);
 	this.domNodes.push(textNode);
 };
@@ -47,7 +48,13 @@ TextNodeWidget.prototype.execute = function() {
 Selectively refreshes the widget if needed. Returns true if the widget or any of its children needed re-rendering
 */
 TextNodeWidget.prototype.refresh = function(changedTiddlers) {
-	return false;
+	var changedAttributes = this.computeAttributes();
+	if(changedAttributes.text) {
+		this.refreshSelf();
+		return true;
+	} else {
+		return false;	
+	}
 };
 
 exports.text = TextNodeWidget;

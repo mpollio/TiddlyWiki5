@@ -12,20 +12,32 @@ Zooms between individual tiddlers
 /*global $tw: false */
 "use strict";
 
+var easing = "cubic-bezier(0.645, 0.045, 0.355, 1)"; // From http://easings.net/#easeInOutCubic
+
 var ZoominListView = function(listWidget) {
 	var self = this;
 	this.listWidget = listWidget;
-	// Make all the tiddlers position absolute, and hide all but the first one
+	// Get the index of the tiddler that is at the top of the history
+	var history = this.listWidget.wiki.getTiddlerData(this.listWidget.historyTitle,[]),
+		targetTiddler;
+	if(history.length > 0) {
+		targetTiddler = history[history.length-1].title;
+	}
+	// Make all the tiddlers position absolute, and hide all but the top (or first) one
 	$tw.utils.each(this.listWidget.children,function(itemWidget,index) {
 		var domNode = itemWidget.findFirstDomNode();
-		if(index) {
+		// Abandon if the list entry isn't a DOM element (it might be a text node)
+		if(!(domNode instanceof Element)) {
+			return;
+		}
+		if(targetTiddler !== itemWidget.parseTreeNode.itemTitle || (!targetTiddler && index)) {
 			domNode.style.display = "none";
 		} else {
 			self.currentTiddlerDomNode = domNode;
 		}
-		domNode.style.position = "absolute";
+		$tw.utils.addClass(domNode,"tc-storyview-zoomin-tiddler");
 	});
-}
+};
 
 ZoominListView.prototype.navigateTo = function(historyInfo) {
 	var duration = $tw.utils.getAnimationDuration(),
@@ -35,9 +47,13 @@ ZoominListView.prototype.navigateTo = function(historyInfo) {
 	}
 	var listItemWidget = this.listWidget.children[listElementIndex],
 		targetElement = listItemWidget.findFirstDomNode();
+	// Abandon if the list entry isn't a DOM element (it might be a text node)
+	if(!(targetElement instanceof Element)) {
+		return;
+	}
 	// Make the new tiddler be position absolute and visible so that we can measure it
+	$tw.utils.addClass(targetElement,"tc-storyview-zoomin-tiddler");
 	$tw.utils.setStyle(targetElement,[
-		{position: "absolute"},
 		{display: "block"},
 		{transformOrigin: "0 0"},
 		{transform: "translateX(0px) translateY(0px) scale(1)"},
@@ -71,18 +87,18 @@ ZoominListView.prototype.navigateTo = function(historyInfo) {
 	this.currentTiddlerDomNode = targetElement;
 	// Transform the target tiddler to its natural size
 	$tw.utils.setStyle(targetElement,[
-		{transition: $tw.utils.roundTripPropertyName("transform") + " " + duration + "ms ease-in, opacity " + duration + "ms ease-in"},
+		{transition: $tw.utils.roundTripPropertyName("transform") + " " + duration + "ms " + easing + ", opacity " + duration + "ms " + easing},
 		{opacity: "1.0"},
 		{transform: "translateX(0px) translateY(0px) scale(1)"},
 		{zIndex: "500"},
 	]);
 	// Transform the previous tiddler out of the way and then hide it
 	if(prevCurrentTiddler && prevCurrentTiddler !== targetElement) {
-		var scale = zoomBounds.width / sourceBounds.width;
+		scale = zoomBounds.width / sourceBounds.width;
 		x =  zoomBounds.left - targetBounds.left - (sourceBounds.left - targetBounds.left) * scale;
 		y =  zoomBounds.top - targetBounds.top - (sourceBounds.top - targetBounds.top) * scale;
 		$tw.utils.setStyle(prevCurrentTiddler,[
-			{transition: $tw.utils.roundTripPropertyName("transform") + " " + duration + "ms ease-in, opacity " + duration + "ms ease-in"},
+			{transition: $tw.utils.roundTripPropertyName("transform") + " " + duration + "ms " + easing + ", opacity " + duration + "ms " + easing},
 			{opacity: "0.0"},
 			{transformOrigin: "0 0"},
 			{transform: "translateX(" + x + "px) translateY(" + y + "px) scale(" + scale + ")"},
@@ -100,10 +116,10 @@ ZoominListView.prototype.navigateTo = function(historyInfo) {
 };
 
 /*
-Find the first child DOM node of a widget that has the class "title"
+Find the first child DOM node of a widget that has the class "tc-title"
 */
 function findTitleDomNode(widget,targetClass) {
-	targetClass = targetClass || "title";
+	targetClass = targetClass || "tc-title";
 	var domNode = widget.findFirstDomNode();
 	if(domNode && domNode.querySelector) {
 		return domNode.querySelector("." + targetClass);
@@ -113,19 +129,31 @@ function findTitleDomNode(widget,targetClass) {
 
 ZoominListView.prototype.insert = function(widget) {
 	var targetElement = widget.findFirstDomNode();
+	// Abandon if the list entry isn't a DOM element (it might be a text node)
+	if(!(targetElement instanceof Element)) {
+		return;
+	}
 	// Make the newly inserted node position absolute and hidden
+	$tw.utils.addClass(targetElement,"tc-storyview-zoomin-tiddler");
 	$tw.utils.setStyle(targetElement,[
-		{display: "none"},
-		{position: "absolute"}
+		{display: "none"}
 	]);
 };
 
 ZoominListView.prototype.remove = function(widget) {
 	var targetElement = widget.findFirstDomNode(),
-		duration = $tw.utils.getAnimationDuration();
+		duration = $tw.utils.getAnimationDuration(),
+		removeElement = function() {
+			widget.removeChildDomNodes();
+		};
+	// Abandon if the list entry isn't a DOM element (it might be a text node)
+	if(!(targetElement instanceof Element)) {
+		removeElement();
+		return;
+	}
 	// Set up the tiddler that is being closed
+	$tw.utils.addClass(targetElement,"tc-storyview-zoomin-tiddler");
 	$tw.utils.setStyle(targetElement,[
-		{position: "absolute"},
 		{display: "block"},
 		{transformOrigin: "50% 50%"},
 		{transform: "translateX(0px) translateY(0px) scale(1)"},
@@ -140,12 +168,12 @@ ZoominListView.prototype.remove = function(widget) {
 	var toWidgetDomNode = toWidget && toWidget.findFirstDomNode();
 	// Set up the tiddler we're moving back in
 	if(toWidgetDomNode) {
+		$tw.utils.addClass(toWidgetDomNode,"tc-storyview-zoomin-tiddler");
 		$tw.utils.setStyle(toWidgetDomNode,[
-			{position: "absolute"},
 			{display: "block"},
 			{transformOrigin: "50% 50%"},
 			{transform: "translateX(0px) translateY(0px) scale(10)"},
-			{transition: $tw.utils.roundTripPropertyName("transform") + " " + duration + "ms ease-in, opacity " + duration + "ms ease-in"},
+			{transition: $tw.utils.roundTripPropertyName("transform") + " " + duration + "ms " + easing + ", opacity " + duration + "ms " + easing},
 			{opacity: "0"},
 			{zIndex: "500"}
 		]);
@@ -158,14 +186,11 @@ ZoominListView.prototype.remove = function(widget) {
 	$tw.utils.setStyle(targetElement,[
 		{transformOrigin: "50% 50%"},
 		{transform: "translateX(0px) translateY(0px) scale(0.1)"},
-		{transition: $tw.utils.roundTripPropertyName("transform") + " " + duration + "ms ease-in, opacity " + duration + "ms ease-in"},
+		{transition: $tw.utils.roundTripPropertyName("transform") + " " + duration + "ms " + easing + ", opacity " + duration + "ms " + easing},
 		{opacity: "0"},
 		{zIndex: "0"}
 	]);
-	setTimeout(function() {
-		// Delete the DOM node when the transition is over
-		widget.removeChildDomNodes();
-	},duration);
+	setTimeout(removeElement,duration);
 	// Now the tiddler we're going back to
 	if(toWidgetDomNode) {
 		$tw.utils.setStyle(toWidgetDomNode,[

@@ -1,17 +1,28 @@
 title: $:/core/ui/PageTemplate/story
 tags: $:/tags/PageTemplate
 
-<section class="story-river">
+<section class="tc-story-river">
 
-<!-- Alerts -->
-<div class="tw-alerts">
+<section class="story-backdrop">
 
-<$list filter="[is[shadow]!has[draft.of]tag[$:/tags/Alert]] [!is[shadow]!has[draft.of]tag[$:/tags/Alert]] +[sort[modified]]" template="$:/core/ui/AlertTemplate" storyview="pop"/>
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/AboveStory]!has[draft.of]]">
 
-</div>
+<$transclude/>
 
-<!-- The main story -->
+</$list>
+
+</section>
+
 <$list filter="[list[$:/StoryList]]" history="$:/HistoryList" template="$:/core/ui/ViewTemplate" editTemplate="$:/core/ui/EditTemplate" storyview={{$:/view}} />
 
-<!-- End of story river -->
+<section class="story-frontdrop">
+
+<$list filter="[all[shadows+tiddlers]tag[$:/tags/BelowStory]!has[draft.of]]">
+
+<$transclude/>
+
+</$list>
+
+</section>
+
 </section>

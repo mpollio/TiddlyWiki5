@@ -144,3 +144,35 @@ Xavier Cazin, @xcazin, 2014/02/21
 Rustem Akbulatov, @nameanyone, 2014/03/04
 
 Harald Albrecht, @TheDiveO, 2014/03/12
+
+Maurizio Pollio, @mpollio, 2014/03/21
+
+Michael Fogleman, @mwfogleman, 2014/04/08
+
+James W. Anderson, @welford, 2014/04/08
+
+Tomohiro Miura, @pekopeko1, 2014/04/15
+
+Devin Weaver, @sukima, 2014/05/21
+
+Irene Knapp, @IreneKnapp, 2014/05/17
+
+Daniel Rodriguez Rivero, @danielo515, 2014/04/18
+
+Jonathan Lister, @jayfresh, 2014/06/23
+
+Stephan Sokolow, @ssokolow, 2014/07/15
+
+Dave Gifford, @giffmex, 2014/09/05
+
+Eucaly J, @Eucaly, 2014/09/14
+
+Mal Gamble, @malgam, 2014/09/19
+
+Ton Gerner, @gernert, 2014/09/19
+
+Julie Bertrand, @Evolena, 2014/09/22
+
+Andrey Yankin, @andrey013, 2014/09/30
+
+David john, @fghhfg, 2014/10/06

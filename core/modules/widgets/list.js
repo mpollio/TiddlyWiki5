@@ -44,7 +44,7 @@ ListWidget.prototype.render = function(parent,nextSibling) {
 	// Construct the storyview
 	var StoryView = this.storyViews[this.storyViewName];
 	if(StoryView && !this.document.isTiddlyWikiFakeDom) {
-		this.storyview = new StoryView(this)
+		this.storyview = new StoryView(this);
 	} else {
 		this.storyview = null;
 	}
@@ -80,7 +80,7 @@ ListWidget.prototype.execute = function() {
 
 ListWidget.prototype.getTiddlerList = function() {
 	var defaultFilter = "[!is[system]sort[title]]";
-	return this.wiki.filterTiddlers(this.getAttribute("filter",defaultFilter),this.getVariable("currentTiddler"));
+	return this.wiki.filterTiddlers(this.getAttribute("filter",defaultFilter),this);
 };
 
 ListWidget.prototype.getEmptyMessage = function() {

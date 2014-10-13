@@ -1,6 +1,5 @@
 {
 	"plugins": [
-		"tiddlywiki/fullscreen"
 	],
 	"themes": [
 		"tiddlywiki/vanilla",
@@ -13,5 +12,9 @@
 	],
 	"languages": [
 		"fr-FR"
-	]
+	],
+	"build": {
+		"index": [
+			"--rendertiddler","$:/core/save/all","fr-fr-demo.html","text/plain"]
+	}
 }

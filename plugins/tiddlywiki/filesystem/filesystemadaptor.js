@@ -3,7 +3,7 @@ title: $:/plugins/tiddlywiki/filesystem/filesystemadaptor.js
 type: application/javascript
 module-type: syncadaptor
 
-A sync adaptor module for synchronising with the local filesystem via node.js APIs 
+A sync adaptor module for synchronising with the local filesystem via node.js APIs
 
 \*/
 (function(){
@@ -13,40 +13,15 @@ A sync adaptor module for synchronising with the local filesystem via node.js AP
 "use strict";
 
 // Get a reference to the file system
-var fs = !$tw.browser ? require("fs") : null;
+var fs = !$tw.browser ? require("fs") : null,
+	path = !$tw.browser ? require("path") : null;
 
-
-function FileSystemAdaptor(syncer) {
+function FileSystemAdaptor(options) {
 	var self = this;
-	this.syncer = syncer;
-	this.watchers = {};
-	this.pending = {};
+	this.wiki = options.wiki;
 	this.logger = new $tw.utils.Logger("FileSystem");
-	this.setwatcher = function(filename, title) {
-		return undefined;
-		return this.watchers[filename] = this.watchers[filename] ||
-			fs.watch(filename, {persistent: false}, function(e) {
-				self.logger.log("Error:",e,filename);
-				if(e === "change") {
-					var tiddlers = $tw.loadTiddlersFromFile(filename).tiddlers;
-					for(var t in tiddlers) {
-						if(tiddlers[t].title) {
-							$tw.wiki.addTiddler(tiddlers[t]);
-						}
-					}
-				}
-			});
-	}
-
-	for(var f in $tw.boot.files) {
-		var fileInfo = $tw.boot.files[f];
-		this.setwatcher(fileInfo.filepath, f);
-	}
 	// Create the <wiki>/tiddlers folder if it doesn't exist
-	// TODO: we should create the path recursively
-	if(!fs.existsSync($tw.boot.wikiTiddlersPath)) {
-		fs.mkdirSync($tw.boot.wikiTiddlersPath);
-	}
+	$tw.utils.createDirectory($tw.boot.wikiTiddlersPath);
 }
 
 FileSystemAdaptor.prototype.getTiddlerInfo = function(tiddler) {
@@ -88,12 +63,11 @@ FileSystemAdaptor.prototype.getTiddlerFileInfo = function(tiddler,callback) {
 			}
 			// Assemble the new fileInfo
 			fileInfo = {};
-			fileInfo.filepath = $tw.boot.wikiTiddlersPath + "/" + self.generateTiddlerFilename(title,extension,files);
+			fileInfo.filepath = $tw.boot.wikiTiddlersPath + path.sep + self.generateTiddlerFilename(title,extension,files);
 			fileInfo.type = typeInfo.fileType || tiddler.fields.type;
 			fileInfo.hasMetaFile = typeInfo.hasMetaFile;
 			// Save the newly created fileInfo
 			$tw.boot.files[title] = fileInfo;
-			self.pending[fileInfo.filepath] = title;
 			// Pass it to the callback
 			callback(null,fileInfo);
 		});
@@ -108,7 +82,7 @@ Given a tiddler title and an array of existing filenames, generate a new legal f
 */
 FileSystemAdaptor.prototype.generateTiddlerFilename = function(title,extension,existingFilenames) {
 	// First remove any of the characters that are illegal in Windows filenames
-	var baseFilename = title.replace(/\<|\>|\:|\"|\/|\\|\||\?|\*|\^/g,"_");
+	var baseFilename = title.replace(/<|>|\:|\"|\/|\\|\||\?|\*|\^/g,"_");
 	// Truncate the filename if it is too long
 	if(baseFilename.length > 200) {
 		baseFilename = baseFilename.substr(0,200) + extension;
@@ -129,21 +103,12 @@ Save a tiddler and invoke the callback with (err,adaptorInfo,revision)
 FileSystemAdaptor.prototype.saveTiddler = function(tiddler,callback) {
 	var self = this;
 	this.getTiddlerFileInfo(tiddler,function(err,fileInfo) {
-		var template, content, encoding;
-		function _finish() {
-			if(self.pending[fileInfo.filepath]) {
-				self.setwatcher(fileInfo.filepath, tiddler.fields.title);
-				delete self.pending[fileInfo.filepath];
-			}
-			callback(null, {}, 0);
-		}
+		var template, content, encoding,
+			_finish = function() {
+				callback(null, {}, 0);
+			};
 		if(err) {
 			return callback(err);
-		}
-		if(self.watchers[fileInfo.filepath]) {
-			self.watchers[fileInfo.filepath].close();
-			delete self.watchers[fileInfo.filepath];
-			self.pending[fileInfo.filepath] = tiddler.fields.title;
 		}
 		if(fileInfo.hasMetaFile) {
 			// Save the tiddler as a separate body and meta file
@@ -152,7 +117,7 @@ FileSystemAdaptor.prototype.saveTiddler = function(tiddler,callback) {
 				if(err) {
 					return callback(err);
 				}
-				content = $tw.wiki.renderTiddler("text/plain","$:/core/templates/tiddler-metadata",{variables: {currentTiddler: tiddler.fields.title}});
+				content = self.wiki.renderTiddler("text/plain","$:/core/templates/tiddler-metadata",{variables: {currentTiddler: tiddler.fields.title}});
 				fs.writeFile(fileInfo.filepath + ".meta",content,{encoding: "utf8"},function (err) {
 					if(err) {
 						return callback(err);
@@ -164,7 +129,7 @@ FileSystemAdaptor.prototype.saveTiddler = function(tiddler,callback) {
 		} else {
 			// Save the tiddler as a self contained templated file
 			template = $tw.config.typeTemplates[fileInfo.type];
-			content = $tw.wiki.renderTiddler("text/plain",template,{variables: {currentTiddler: tiddler.fields.title}});
+			content = self.wiki.renderTiddler("text/plain",template,{variables: {currentTiddler: tiddler.fields.title}});
 			fs.writeFile(fileInfo.filepath,content,{encoding: "utf8"},function (err) {
 				if(err) {
 					return callback(err);
@@ -188,16 +153,11 @@ FileSystemAdaptor.prototype.loadTiddler = function(title,callback) {
 /*
 Delete a tiddler and invoke the callback with (err)
 */
-FileSystemAdaptor.prototype.deleteTiddler = function(title,callback) {
+FileSystemAdaptor.prototype.deleteTiddler = function(title,callback,options) {
 	var self = this,
 		fileInfo = $tw.boot.files[title];
 	// Only delete the tiddler if we have writable information for the file
 	if(fileInfo) {
-		if(this.watchers[fileInfo.filepath]) {
-			this.watchers[fileInfo.filepath].close();
-			delete this.watchers[fileInfo.filepath];
-		}
-		delete this.pending[fileInfo.filepath];
 		// Delete the file
 		fs.unlink(fileInfo.filepath,function(err) {
 			if(err) {

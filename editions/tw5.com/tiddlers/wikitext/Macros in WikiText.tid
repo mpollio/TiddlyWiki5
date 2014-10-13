@@ -1,12 +1,15 @@
 created: 20131205160746466
-modified: 20140211190841939
-tags: wikitext
+modified: 20140619111725471
+tags: WikiText
 title: Macros in WikiText
 type: text/vnd.tiddlywiki
+caption: Macros
 
 ! Defining Macros
 
-Macros are snippets of text that can be inserted with a concise shortcut. A macro is defined like this:
+Macros are snippets of text that can be inserted with a concise shortcut.
+
+Multi-line macros are defined like this:
 
 ```
 \define mysamplemacro(name:"Bugs Bunny",address:"Rabbit Hole Hill")
@@ -16,9 +19,19 @@ Hi, I'm $name$ and I live in $address$
 
 The first line of the definition specifies the macro name and any parameters. Parameters are named and can optionally have default values that are used if the parameter isn't specified at the time of calling. The body of the macro definition follows, terminated with `\end`. The macro can include parameters using the `$name$` construction.
 
+Single-line macros can omit the `\end` marker like this:
+
+```
+\define mysamplemacro(name:"Bugs Bunny") Hi, I'm $name$
+```
+
 Macro definitions must be placed at the top of a tiddler. Macros are available to the tiddler that defines them, plus any tiddlers that it transcludes.
 
-[[JavaScript Macros]] can also be used for more flexibility.
+Global macros can be defined in any tiddler with the tag [[$:/tags/Macro]]. They are then available within all tiddlers.
+
+Macros can be imported from other tiddlers with the ImportVariablesWidget.
+
+[[JavaScript Macros|http://tiddlywiki.com/dev/index.html#JavaScript%20Macros]] can also be used for more flexibility.
 
 ! Using Macros
 
@@ -38,3 +51,40 @@ Hi I'm Donald Duck and I live in Rabbit Hole Hill
 Hi I'm Mickey Mouse and I live in Mouse House
 
 ```
+
+! Multiline Parameters
+
+Parameters can include line breaks. For example:
+
+```
+<<mysamplemacro "Mickey Mouse" "Mouse House,
+Mouse Lane,
+Rodentville,
+Ratland.">>
+```
+
+By using triple-double quotes you can specify parameter values that include single double quotes. For example:
+
+```
+<<mysamplemacro "Mickey Mouse" """Mouse House,
+"Mouse" Lane,
+Rodentville,
+Ratland.""">>
+```
+
+! Invoked 
+
+There are many different ways to invoke macro.A macro called `italicise` that takes a single parameter called `text` can be invoked in any of these ways:
+
+```
+<<italicise "Text to be made into italics">>
+<<italicise text:"Text to be made into italics">>
+<$macrocall $name="italicise" text="Text to be made into italics"/>
+<$macrocall $name="italicise" text={{Title of tiddler containing text to be italicised}}/>
+<$macrocall $name="italicise" text=<<textMaker "Another macro to generate the text to be italicised">>/>
+```
+
+''also see''
+
+* [[Macros]]
+* [[MacroCallWidget]]

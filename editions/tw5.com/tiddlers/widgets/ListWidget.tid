@@ -1,11 +1,12 @@
 created: 201310241419
 modified: 201310300837
-tags: widget
+tags: Widgets
 title: ListWidget
+caption: list
 
 ! Introduction
 
-The list widget displays a sequence of tiddlers that match a [[tiddler filter|TiddlerFilters]]. It can be used for many purposes:
+The list widget displays a sequence of tiddlers that match a [[tiddler filter|Filters]]. It can be used for many purposes:
 
 * Displaying custom lists of links, like in TiddlyWiki5's sidebar
 * Custom lists, such as "all tiddlers tagged 'task' that are not tagged 'done'"
@@ -19,7 +20,7 @@ The tiddlers can either be displayed by transcluding each in turn through an opt
 The content of the `<$list>` widget is an optional template to use for rendering each tiddler in the list (alternatively, the template can be specified as a tiddler title in the ``template`` attribute).
 
 |!Attribute |!Description |
-|filter |The TiddlerFilter to display |
+|filter |The [[tiddler filter|Filters]] to display |
 |template |The title of a template tiddler for rendering each tiddler in the list |
 |editTemplate |An alternative template to use for DraftTiddlers in edit mode |
 |variable |The [[widget variable|WidgetVariables]] name to be assigned the title of each tiddler in the list. Defaults to ''currentTiddler'' |
@@ -33,11 +34,13 @@ The `<$list>` widget can optionally render draft tiddlers through a different te
 
 !! `storyview` attribute
 
-The `storyview` attribute gives the specifies the name of an optional module that can animate changes to the list (including navigation). The core ships with the following storyview modules:
+The `storyview` attribute specifies the name of an optional module that can animate changes to the list (including navigation). The core ships with the following storyview modules:
 
 * `classic`: renders the list as an ordered sequence of tiddlers
 * `zoomin`: just renders the current tiddler from the list, with a zoom animation for navigating between tiddlers
 * `pop`: shrinks items in and out of place
+
+In order for the storyviews to animate correctly each entry in the list should be a single block mode DOM element.
 
 !! Handling history and navigation
 
@@ -53,10 +56,10 @@ The ''types'' listing is performed with this markup:
 
 ```
 <$list filter="[!is[system]has[type]each[type]sort[type]]">
-<div class="tw-menu-list-item">
+<div class="tc-menu-list-item">
 <$view field="type"/>
 <$list filter="[type{!!type}!is[system]sort[title]]">
-<div class="tw-menu-list-subitem">
+<div class="tc-menu-list-subitem">
 <$link to={{!!title}}><$view field="title"/></$link>
 </div>
 </$list>
@@ -71,10 +74,10 @@ The ''recent'' listing is performed with this markup:
 
 ```
 <$list filter="[!is[system]has[modified]!sort[modified]limit[100]eachday[modified]]">
-<div class="tw-menu-list-item">
+<div class="tc-menu-list-item">
 <$view field="modified" format="date" template="DDth MMM YYYY"/>
 <$list filter="[sameday{!!modified}!is[system]!sort[modified]]">
-<div class="tw-menu-list-subitem">
+<div class="tc-menu-list-subitem">
 <$link to={{!!title}}><$view field="title"/></$link>
 </div>
 </$list>
